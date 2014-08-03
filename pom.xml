@@ -4,7 +4,7 @@
 
     <groupId>net.bramp.objectgraph</groupId>
     <artifactId>objectgraph</artifactId>
-    <version>1.0</version>
+    <version>1.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Object Graph</name>
@@ -29,7 +29,7 @@
     <scm>
         <url>https://github.com/bramp/objectgraph</url>
         <connection>scm:git:git@github.com:bramp/objectgraph.git</connection>
-        <tag>objectgraph-1.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
