@@ -38,7 +38,7 @@ public class ObjectGraph {
 		this.visitor = visitor;
 	}
 
-	static ObjectGraph visitor(Visitor visitor) {
+	static public ObjectGraph visitor(Visitor visitor) {
 		return new ObjectGraph(visitor);
 	}
 
