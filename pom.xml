@@ -29,8 +29,8 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/bramp/db-patterns</url>
-        <connection>scm:git:git@github.com:bramp/db-patterns.git</connection>
+        <url>https://github.com/bramp/objectgraph</url>
+        <connection>scm:git:git@github.com:bramp/objectgraph.git</connection>
         <tag>HEAD</tag>
     </scm>
 
@@ -44,6 +44,12 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>17.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

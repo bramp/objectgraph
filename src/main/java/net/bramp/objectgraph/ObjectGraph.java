@@ -21,6 +21,9 @@ public class ObjectGraph {
 	boolean excludeTransient  = true;
 	boolean excludeStatic     = true;
 
+	// TODO Consider added a excludedClasses setting. We won't decend into these classes
+	//Set<Class> excludedClasses;
+
 	public static interface Visitor {
 		/**
 		 * Called for each Object visited
