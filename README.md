@@ -9,26 +9,30 @@ algorithm is array based, so does not encounter stack overflow issues.
 Maven
 -----
 
-	<dependency>
-		<groupId>net.bramp.objectgraph</groupId>
-		<artifactId>objectgraph</artifactId>
-		<version>1.0</version>
-	</dependency>
+```xml
+<dependency>
+	<groupId>net.bramp.objectgraph</groupId>
+	<artifactId>objectgraph</artifactId>
+	<version>1.0</version>
+</dependency>
+```
 
 Example
 -------
 
-	ObjectGraph
-	    .visitor(new ObjectGraph.Visitor() {
-		    @Override
-		    public boolean visit(Object object, Class clazz) {
-			    System.out.println("visited " + object.toString());
-			    return false;
-		    }
-	    })
-	    .excludeStatic()
-	    .excludeTransient()
-	    .traverse( myObject );
+```java
+ObjectGraph
+    .visitor(new ObjectGraph.Visitor() {
+	    @Override
+	    public boolean visit(Object object, Class clazz) {
+		    System.out.println("visited " + object.toString());
+		    return false;
+	    }
+    })
+    .excludeStatic()
+    .excludeTransient()
+    .traverse( myObject );
+```
 
 Use Cases
 ---------
