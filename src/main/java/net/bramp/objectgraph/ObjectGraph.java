@@ -113,7 +113,14 @@ public class ObjectGraph {
 				for (int i = 0; i < len; i++) {
 					addIfNotVisited(Array.get(obj, i), arrayType);
 				}
+			} else if (obj instanceof Iterable) {
 
+				Iterator iter = ((Iterable) obj).iterator();
+
+				while (iter.hasNext()) {
+					Object element = iter.next();
+					addIfNotVisited(element, element.getClass());
+				}
 			} else {
 				// If a normal class, add each field
 				Field[] fields = clazz.getDeclaredFields();
