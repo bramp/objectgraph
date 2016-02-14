@@ -1,9 +1,6 @@
 package net.bramp.objectgraph;
 
-import net.bramp.objectgraph.test.ArrayTestClass;
-import net.bramp.objectgraph.test.FieldTestClass;
-import net.bramp.objectgraph.test.LoopTestClass;
-import net.bramp.objectgraph.test.PrimitiveTestClass;
+import net.bramp.objectgraph.test.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,6 +12,7 @@ public class ObjectGraphTest {
 	PrimitiveTestClass primitiveTest = new PrimitiveTestClass();
 	LoopTestClass loopTest = new LoopTestClass();
 	ArrayTestClass arrayTest = new ArrayTestClass();
+	IterableTestClass iterableTest = new IterableTestClass();
 
 	@Before
 	public void before() {
@@ -91,6 +89,15 @@ public class ObjectGraphTest {
 
 		ObjectGraph.visitor(visitor)
 			.traverse(arrayTest);
+	}
+
+	@Test
+	public void testIterables() {
+
+		TestVisitor visitor = new TestVisitor();
+
+		ObjectGraph.visitor(visitor)
+				.traverse(iterableTest);
 	}
 
 	@Test
