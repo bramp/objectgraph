@@ -1,10 +1,15 @@
 objectgraph
 ===========
-by Andrew Brampton 2014
+by Andrew Brampton 2014,2016
+
+![Java](https://img.shields.io/badge/Java-6+-brightgreen.svg)
+[![Build Status](https://img.shields.io/travis/bramp/objectgraph.svg)](https://travis-ci.org/bramp/objectgraph)
+[![Maven](https://img.shields.io/maven-central/v/net.bramp.objectgraph/objectgraph.svg)](http://mvnrepository.com/artifact/net.bramp.objectgraph/objectgraph)
 
 Simple library to traverse Java object graph. A breadth-first search is conducted
 on each field of each object encountered. No object is visited twice, and the
 algorithm is array based, so does not encounter stack overflow issues.
+
 
 Maven
 -----
@@ -13,7 +18,7 @@ Maven
 <dependency>
 	<groupId>net.bramp.objectgraph</groupId>
 	<artifactId>objectgraph</artifactId>
-	<version>1.0</version>
+	<version>1.0.1</version>
 </dependency>
 ```
 
@@ -54,12 +59,14 @@ To build this project use ``mvn``.
 
 To push a release to maven central use the standard maven release plugin, and Sonatype's OSS repo:
 
-	mvn release:prepare
-	mvn release:perform
+```bash
+mvn release:prepare
+mvn release:perform
+```
 
 Licence
 -------
-	Copyright (c) 2014, Andrew Brampton
+	Copyright (c) 2014,2016, Andrew Brampton
 	All rights reserved.
 	
 	Redistribution and use in source and binary forms, with or without
