@@ -1,10 +1,12 @@
 package net.bramp.objectgraph;
 
+import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
@@ -19,10 +21,12 @@ class TestVisitor implements ObjectGraph.Visitor {
 
 		System.out.println(clazz.toString() + " " + object.toString());
 
-		assertNotNull(object);
-		assertNotNull(clazz);
+		// We expect non-null arguments
+		assertThat(object).isNotNull();
+		assertThat(clazz).isNotNull();
 
-		assertFalse(found.contains(object));
+		// Check we haven't double visited this node
+		assertThat(found).usingElementComparator(Ordering.arbitrary()).doesNotContain(object);
 
 		found.add(object);
 		return false;

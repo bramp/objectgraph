@@ -10,8 +10,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ObjectGraphTest {
 
@@ -24,7 +23,6 @@ public class ObjectGraphTest {
 	public void before() {
 		loopTest.child = new LoopTestClass();
 		loopTest.child.child = loopTest;
-
 	}
 
 	@Test
@@ -36,7 +34,7 @@ public class ObjectGraphTest {
 			.includeTransient()
 			.traverse(fieldTest);
 
-		assertTrue(visitor.found.containsAll(fieldTest.allFields()));
+		assertThat(visitor.found).containsAll(fieldTest.allFields());
 	}
 
 	@Test
@@ -48,7 +46,7 @@ public class ObjectGraphTest {
 			.includeTransient()
 			.traverse(fieldTest);
 
-		assertFalse(visitor.found.contains(FieldTestClass.staticField));
+		assertThat(visitor.found).doesNotContain(FieldTestClass.staticField);
 	}
 
 	@Test
@@ -60,7 +58,7 @@ public class ObjectGraphTest {
 			.excludeTransient()
 			.traverse(fieldTest);
 
-		assertFalse(visitor.found.contains(fieldTest.transientField));
+		assertThat(visitor.found).doesNotContain(fieldTest.transientField);
 	}
 
 	@Test
@@ -70,7 +68,7 @@ public class ObjectGraphTest {
 		ObjectGraph.visitor(visitor)
 			.traverse(primitiveTest);
 
-		assertFalse(visitor.found.isEmpty());
+		assertThat(visitor.found).isNotEmpty();
 	}
 
 	@Test
@@ -80,7 +78,7 @@ public class ObjectGraphTest {
 		ObjectGraph.visitor(visitor)
 			.traverse(loopTest);
 
-		assertTrue(visitor.found.size() == 2);
+		assertThat(visitor.found).hasSize(2);
 	}
 
 	@Test
