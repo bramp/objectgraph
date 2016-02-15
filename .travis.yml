@@ -10,8 +10,11 @@ jdk:
 os:
   - linux
 
+install:
+  - mvn dependency:go-offline -B -V
+
 script:
-  - mvn clean verify -Dgpg.skip=true
+  - mvn clean verify -Dgpg.skip=true -B -V
 
 cache:
   directories:
