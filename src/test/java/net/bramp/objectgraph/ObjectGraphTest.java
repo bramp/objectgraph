@@ -29,7 +29,6 @@ public class ObjectGraphTest {
 
 	@Test
 	public void testFieldTypes() {
-
 		TestVisitor visitor = new TestVisitor();
 
 		ObjectGraph.visitor(visitor)
@@ -42,7 +41,6 @@ public class ObjectGraphTest {
 
 	@Test
 	public void testNoStaticTypes() {
-
 		TestVisitor visitor = new TestVisitor();
 
 		ObjectGraph.visitor(visitor)
@@ -55,7 +53,6 @@ public class ObjectGraphTest {
 
 	@Test
 	public void testNoTransientTypes() {
-
 		TestVisitor visitor = new TestVisitor();
 
 		ObjectGraph.visitor(visitor)
@@ -68,7 +65,6 @@ public class ObjectGraphTest {
 
 	@Test
 	public void testPrimitivesTypes() {
-
 		TestVisitor visitor = new TestVisitor();
 
 		ObjectGraph.visitor(visitor)
@@ -79,7 +75,6 @@ public class ObjectGraphTest {
 
 	@Test
 	public void testLoops() {
-
 		TestVisitor visitor = new TestVisitor();
 
 		ObjectGraph.visitor(visitor)
@@ -90,7 +85,6 @@ public class ObjectGraphTest {
 
 	@Test
 	public void testArrays() {
-
 		TestVisitor visitor = new TestVisitor();
 
 		ObjectGraph.visitor(visitor)

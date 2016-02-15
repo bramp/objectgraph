@@ -24,14 +24,14 @@ public class ObjectGraph {
 	// TODO Consider added a excludedClasses setting. We won't decend into these classes
 	//Set<Class> excludedClasses;
 
-	public static interface Visitor {
+	public interface Visitor {
 		/**
 		 * Called for each Object visited
 		 * @param object The object being visited
 		 * @param clazz The field type this object was in. This will differ from object.getClass(), when the Clazz is one of the primitive types
 		 * @return return true if you wish the graph transversal to stop, otherwise it will continue.
 		 */
-		public boolean visit(Object object, Class clazz);
+		boolean visit(Object object, Class clazz);
 	}
 
 	ObjectGraph(Visitor visitor) {
@@ -42,21 +42,37 @@ public class ObjectGraph {
 		return new ObjectGraph(visitor);
 	}
 
+	/**
+	 * Include transient fields. By default they are excluded.
+	 * @return
+	 */
 	public ObjectGraph includeTransient() {
 		excludeTransient = false;
 		return this;
 	}
 
+	/**
+	 * Exclude transient fields. By default they are excluded
+	 * @return
+	 */
 	public ObjectGraph excludeTransient() {
 		excludeTransient = true;
 		return this;
 	}
 
+	/**
+	 * Include static fields. By default they are excluded.
+	 * @return
+	 */
 	public ObjectGraph includeStatic() {
 		excludeStatic = false;
 		return this;
 	}
 
+	/**
+	 * Exclude static fields. By default they are excluded.
+	 * @return
+	 */
 	public ObjectGraph excludeStatic() {
 		excludeStatic = true;
 		return this;
@@ -64,7 +80,7 @@ public class ObjectGraph {
 
 	/**
 	 * Conducts a breath first search of the object graph
-	 * @param root
+	 * @param root the object to start at.
 	 */
 	public void traverse(Object root) {
 		// Reset the state
@@ -78,11 +94,22 @@ public class ObjectGraph {
 		start();
 	}
 
-	private boolean canDecend(Class clazz) {
-		// We can't decend into Primitives (they are not objects)
+	/**
+	 * Is this class a type we can descend deeper into. For example, primitives do not
+	 * contains fields, so we can not descend into them.
+	 * @param clazz
+	 * @return
+	 */
+	private boolean canDescend(Class clazz) {
+		// We can't descend into Primitives (they are not objects)
 		return !clazz.isPrimitive();
 	}
 
+	/**
+	 * Add this object to be visited if it has not already been visited, or scheduled to be.
+	 * @param object
+	 * @param clazz
+	 */
 	private void addIfNotVisited(Object object, Class clazz) {
 		if (object != null && !visited.containsKey(object)) {
 			toVisit.add(object);
@@ -101,7 +128,7 @@ public class ObjectGraph {
 			if (terminate)
 				return;
 
-			if (!canDecend(clazz))
+			if (!canDescend(clazz))
 				continue;
 
 			if (clazz.isArray()) {
