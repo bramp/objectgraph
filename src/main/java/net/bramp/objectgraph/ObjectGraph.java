@@ -18,8 +18,8 @@ public class ObjectGraph {
 
 	final Visitor visitor;
 
-	boolean excludeTransient  = true;
-	boolean excludeStatic     = true;
+	boolean excludeTransient = true;
+	boolean excludeStatic = true;
 
 	// TODO Consider added a excludedClasses setting. We won't decend into these classes
 	//Set<Class> excludedClasses;
@@ -28,7 +28,7 @@ public class ObjectGraph {
 		/**
 		 * Called for each Object visited
 		 * @param object The object being visited
-		 * @param clazz The field type this object was in. This will differ from object.getClass(), when the Clazz is one of the primitive types
+		 * @param clazz  The field type this object was in. This will differ from object.getClass(), when the Clazz is one of the primitive types
 		 * @return return true if you wish the graph transversal to stop, otherwise it will continue.
 		 */
 		boolean visit(Object object, Class clazz);
@@ -117,6 +117,16 @@ public class ObjectGraph {
 		}
 	}
 
+	private List<Field> getAllFields(List<Field> fields, Class<?> type) {
+		fields.addAll(Arrays.asList(type.getDeclaredFields()));
+
+		if (type.getSuperclass() != null) {
+			fields = getAllFields(fields, type.getSuperclass());
+		}
+
+		return fields;
+	}
+
 	private void start() {
 
 		while (!toVisit.isEmpty()) {
@@ -140,10 +150,19 @@ public class ObjectGraph {
 				for (int i = 0; i < len; i++) {
 					addIfNotVisited(Array.get(obj, i), arrayType);
 				}
+			} else if (Collection.class.isAssignableFrom(clazz)) {
+				final Collection collection = (Collection) obj;
+
+				for (Object o : collection) {
+					if (o == null) {
+						continue;
+					}
+					addIfNotVisited(o, o.getClass());
+				}
 
 			} else {
 				// If a normal class, add each field
-				Field[] fields = clazz.getDeclaredFields();
+				List<Field> fields = getAllFields(new ArrayList<>(), obj.getClass());
 				for (Field field : fields) {
 					int modifiers = field.getModifiers();
 
