@@ -162,7 +162,7 @@ public class ObjectGraph {
 
 			} else {
 				// If a normal class, add each field
-				List<Field> fields = getAllFields(new ArrayList<>(), obj.getClass());
+				List<Field> fields = getAllFields(new ArrayList<Field>(), obj.getClass());
 				for (Field field : fields) {
 					int modifiers = field.getModifiers();
 
