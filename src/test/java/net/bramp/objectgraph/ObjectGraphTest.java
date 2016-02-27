@@ -5,6 +5,7 @@ import net.bramp.objectgraph.test.ArrayTestClass;
 import net.bramp.objectgraph.test.FieldTestClass;
 import net.bramp.objectgraph.test.LoopTestClass;
 import net.bramp.objectgraph.test.PrimitiveTestClass;
+import net.bramp.objectgraph.test.SubFieldTestClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,6 +19,7 @@ public class ObjectGraphTest {
 	PrimitiveTestClass primitiveTest = new PrimitiveTestClass();
 	LoopTestClass loopTest = new LoopTestClass();
 	ArrayTestClass arrayTest = new ArrayTestClass();
+	SubFieldTestClass subFieldTest = new SubFieldTestClass();
 
 	@Before
 	public void before() {
@@ -35,6 +37,18 @@ public class ObjectGraphTest {
 			.traverse(fieldTest);
 
 		assertThat(visitor.found).containsAll(fieldTest.allFields());
+	}
+
+	@Test
+	public void testSubclassTypes() {
+		TestVisitor visitor = new TestVisitor();
+
+		ObjectGraph.visitor(visitor)
+				.includeStatic()
+				.includeTransient()
+				.traverse(subFieldTest);
+
+		assertThat(visitor.found).containsAll(subFieldTest.allFields());
 	}
 
 	@Test

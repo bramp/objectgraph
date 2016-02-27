@@ -12,7 +12,7 @@ public class FieldTestClass {
 	protected Object protectedField = new Object();
 	public Object publicField = new Object();
 	Object defaultField = new Object();
-	public Object nullField;
+	@SuppressWarnings("unused") public Object nullField;
 
 	public static Object staticField = new Object();
 

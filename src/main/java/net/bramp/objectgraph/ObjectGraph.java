@@ -117,14 +117,20 @@ public class ObjectGraph {
 		}
 	}
 
-	private List<Field> getAllFields(List<Field> fields, Class<?> type) {
-		fields.addAll(Arrays.asList(type.getDeclaredFields()));
+	/**
+	 * Return all declared and inherited fields for this class
+	 * @param fields
+	 * @param clazz
+	 * @return
+   */
+	private List<Field> getAllFields(List<Field> fields, Class clazz) {
+		fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
 
-		if (type.getSuperclass() != null) {
-			fields = getAllFields(fields, type.getSuperclass());
+		if (clazz.getSuperclass() != null) {
+			getAllFields(fields, clazz.getSuperclass());
 		}
 
-		return fields;
+		return Collections.unmodifiableList(fields);
 	}
 
 	private void start() {
@@ -149,15 +155,6 @@ public class ObjectGraph {
 
 				for (int i = 0; i < len; i++) {
 					addIfNotVisited(Array.get(obj, i), arrayType);
-				}
-			} else if (Collection.class.isAssignableFrom(clazz)) {
-				final Collection collection = (Collection) obj;
-
-				for (Object o : collection) {
-					if (o == null) {
-						continue;
-					}
-					addIfNotVisited(o, o.getClass());
 				}
 
 			} else {
