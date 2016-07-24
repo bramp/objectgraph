@@ -11,8 +11,6 @@ public class SubFieldTestClass extends FieldTestClass {
   Object subField = new Object();
 
   public Set<Object> allFields() {
-    return ImmutableSet.builder()
-        .addAll(super.allFields())
-        .add(subField).build();
+    return ImmutableSet.builder().addAll(super.allFields()).add(subField).build();
   }
 }
