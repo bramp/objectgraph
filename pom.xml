@@ -173,6 +173,22 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>net.revelc.code</groupId>
+                <artifactId>formatter-maven-plugin</artifactId>
+                <version>0.5.2</version>
+                <configuration>
+                    <lineEnding>LF</lineEnding>
+                    <configFile>${project.basedir}/eclipse-java-google-style.xml</configFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
 
         <defaultGoal>install</defaultGoal>
