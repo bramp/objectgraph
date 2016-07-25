@@ -21,8 +21,7 @@ public class ObjectGraph {
   boolean excludeTransient = true;
   boolean excludeStatic = true;
 
-  // TODO Consider added a excludedClasses setting. We won't decend into these classes
-  // Set<Class> excludedClasses;
+  private final Set<Class> excludedClasses = new HashSet<Class>();
 
   public interface Visitor {
     /**
@@ -85,6 +84,22 @@ public class ObjectGraph {
   }
 
   /**
+   * Exclude any object that extends from these classes.
+   *
+   * @param classes
+   * @return
+   */
+  public ObjectGraph excludeClasses(Class... classes) {
+    for (Class c : classes) {
+      if (c == null) {
+        throw new NullPointerException("Null class not allowed");
+      }
+      excludedClasses.add(c);
+    }
+    return this;
+  }
+
+  /**
    * Conducts a breath first search of the object graph
    * 
    * @param root the object to start at.
@@ -111,6 +126,21 @@ public class ObjectGraph {
   private boolean canDescend(Class clazz) {
     // We can't descend into Primitives (they are not objects)
     return !clazz.isPrimitive();
+  }
+
+  /**
+   * Is the class on the excluded list.
+   * 
+   * @param clazz
+   * @return
+   */
+  private boolean isExcludedClass(Class clazz) {
+    for (Class c : excludedClasses) {
+      if (c.isAssignableFrom(clazz)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -179,10 +209,24 @@ public class ObjectGraph {
           if (excludeTransient && (modifiers & Modifier.TRANSIENT) == Modifier.TRANSIENT)
             continue;
 
+          Class fieldType = field.getType();
+
+          // If the field type is directly on the exclude list, then skip.
+          // Strictly this isn't needed as isExcludedClass is called later, but this is cheap
+          // and avoids getting the object, which could be expensive (think hibernate).
+          if (excludedClasses.contains(fieldType))
+            continue;
+
           try {
             field.setAccessible(true);
             Object value = field.get(obj);
-            addIfNotVisited(value, field.getType());
+
+            // If the object's type, or parent of the object's type is on the exclude list, then
+            // skip.
+            if (value != null && isExcludedClass(value.getClass()))
+              continue;
+
+            addIfNotVisited(value, fieldType);
 
           } catch (IllegalAccessException e) {
             // Ignore the exception

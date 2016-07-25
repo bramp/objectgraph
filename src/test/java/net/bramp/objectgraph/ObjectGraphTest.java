@@ -2,6 +2,7 @@ package net.bramp.objectgraph;
 
 import com.google.common.collect.Lists;
 import net.bramp.objectgraph.test.ArrayTestClass;
+import net.bramp.objectgraph.test.ClassTestClass;
 import net.bramp.objectgraph.test.FieldTestClass;
 import net.bramp.objectgraph.test.LoopTestClass;
 import net.bramp.objectgraph.test.PrimitiveTestClass;
@@ -20,6 +21,7 @@ public class ObjectGraphTest {
   LoopTestClass loopTest = new LoopTestClass();
   ArrayTestClass arrayTest = new ArrayTestClass();
   SubFieldTestClass subFieldTest = new SubFieldTestClass();
+  ClassTestClass classTest = new ClassTestClass();
 
   @Before
   public void before() {
@@ -61,6 +63,15 @@ public class ObjectGraphTest {
     ObjectGraph.visitor(visitor).includeStatic().excludeTransient().traverse(fieldTest);
 
     assertThat(visitor.found).doesNotContain(fieldTest.transientField);
+  }
+
+  @Test
+  public void testExcludeClasses() {
+    TestVisitor visitor = new TestVisitor();
+
+    ObjectGraph.visitor(visitor).excludeClasses(ClassTestClass.Child.class).traverse(classTest);
+
+    assertThat(visitor.found).contains(classTest.r).doesNotContain(classTest.c, classTest.cc);
   }
 
   @Test
