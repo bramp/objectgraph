@@ -7,7 +7,7 @@ import java.util.*;
 
 /**
  * Uses a breath-first search to transverse a object graph. This is done a similar manner to how a
- * library would serialise a object
+ * library would serialise a object.
  *
  * @author bramp
  */
@@ -25,11 +25,11 @@ public class ObjectGraph {
 
   public interface Visitor {
     /**
-     * Called for each Object visited
+     * Called for each Object visited.
      * 
      * @param object The object being visited
-     * @param clazz The field type this object was in. This will differ from object.getClass(), when
-     *        the Clazz is one of the primitive types
+     * @param clazz The type of field this object was originally found in. This may differ from
+     *        object.getClass() as an field defined as an Object, by hold any kind of class.
      * @return return true if you wish the graph transversal to stop, otherwise it will continue.
      */
     boolean visit(Object object, Class clazz);
@@ -46,7 +46,7 @@ public class ObjectGraph {
   /**
    * Include transient fields. By default they are excluded.
    * 
-   * @return
+   * @return this
    */
   public ObjectGraph includeTransient() {
     excludeTransient = false;
@@ -54,9 +54,9 @@ public class ObjectGraph {
   }
 
   /**
-   * Exclude transient fields. By default they are excluded
+   * Exclude transient fields. By default they are excluded.
    * 
-   * @return
+   * @return this
    */
   public ObjectGraph excludeTransient() {
     excludeTransient = true;
@@ -66,7 +66,7 @@ public class ObjectGraph {
   /**
    * Include static fields. By default they are excluded.
    * 
-   * @return
+   * @return this
    */
   public ObjectGraph includeStatic() {
     excludeStatic = false;
@@ -76,7 +76,7 @@ public class ObjectGraph {
   /**
    * Exclude static fields. By default they are excluded.
    * 
-   * @return
+   * @return this
    */
   public ObjectGraph excludeStatic() {
     excludeStatic = true;
@@ -86,8 +86,8 @@ public class ObjectGraph {
   /**
    * Exclude any object that extends from these classes.
    *
-   * @param classes
-   * @return
+   * @param classes to exclude.
+   * @return this
    */
   public ObjectGraph excludeClasses(Class... classes) {
     for (Class c : classes) {
@@ -100,7 +100,7 @@ public class ObjectGraph {
   }
 
   /**
-   * Conducts a breath first search of the object graph
+   * Conducts a breath first search of the object graph.
    * 
    * @param root the object to start at.
    */
@@ -121,7 +121,7 @@ public class ObjectGraph {
    * fields, so we can not descend into them.
    * 
    * @param clazz
-   * @return
+   * @return if this class is descendable.
    */
   private boolean canDescend(Class clazz) {
     // We can't descend into Primitives (they are not objects)
@@ -146,8 +146,8 @@ public class ObjectGraph {
   /**
    * Add this object to be visited if it has not already been visited, or scheduled to be.
    * 
-   * @param object
-   * @param clazz
+   * @param object The object
+   * @param clazz The type of the field
    */
   private void addIfNotVisited(Object object, Class clazz) {
     if (object != null && !visited.containsKey(object)) {
@@ -157,13 +157,15 @@ public class ObjectGraph {
   }
 
   /**
-   * Return all declared and inherited fields for this class
+   * Return all declared and inherited fields for this class.
    * 
    * @param fields
    * @param clazz
    * @return
    */
   private List<Field> getAllFields(List<Field> fields, Class clazz) {
+    // TODO consider caching the results of this.
+
     fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
 
     if (clazz.getSuperclass() != null) {
