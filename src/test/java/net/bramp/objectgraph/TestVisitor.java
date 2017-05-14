@@ -15,7 +15,7 @@ class TestVisitor implements ObjectGraph.Visitor {
   public final Set<Object> found = Sets.newIdentityHashSet();
 
   @Override
-  public boolean visit(Object object, Class clazz) {
+  public boolean visit(Object object, Class<?> clazz) {
 
     System.out.println(clazz.toString() + " " + object.toString());
 
