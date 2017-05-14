@@ -1,5 +1,7 @@
 package net.bramp.objectgraph;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -13,15 +15,23 @@ import java.util.*;
  */
 public class ObjectGraph {
 
-  final Map<Object, Class> visited = new IdentityHashMap<Object, Class>();
-  final Queue<Object> toVisit = new ArrayDeque<Object>();
+  final Map<Object, Class<?>> visited = new IdentityHashMap<>();
+  final Queue<Object> toVisit = new ArrayDeque<>();
 
   final Visitor visitor;
 
   boolean excludeTransient = true;
   boolean excludeStatic = true;
 
-  private final Set<Class> excludedClasses = new HashSet<Class>();
+  private final Set<Class<?>> excludedClasses = new HashSet<>();
+
+  @CanIgnoreReturnValue
+  public static <T> T checkNotNull(T reference) {
+    if (reference == null) {
+      throw new NullPointerException();
+    }
+    return reference;
+  }
 
   public interface Visitor {
     /**
@@ -32,11 +42,11 @@ public class ObjectGraph {
      *     object.getClass() as an field defined as an Object, by hold any kind of class.
      * @return return true if you wish the graph transversal to stop, otherwise it will continue.
      */
-    boolean visit(Object object, Class clazz);
+    boolean visit(Object object, Class<?> clazz);
   }
 
   ObjectGraph(Visitor visitor) {
-    this.visitor = visitor;
+    this.visitor = checkNotNull(visitor);
   }
 
   public static ObjectGraph visitor(Visitor visitor) {
@@ -89,8 +99,8 @@ public class ObjectGraph {
    * @param classes to exclude.
    * @return this
    */
-  public ObjectGraph excludeClasses(Class... classes) {
-    for (Class c : classes) {
+  public ObjectGraph excludeClasses(Class<?>... classes) {
+    for (Class<?> c : classes) {
       if (c == null) {
         throw new NullPointerException("Null class not allowed");
       }
@@ -122,9 +132,9 @@ public class ObjectGraph {
    * @param clazz
    * @return if this class is descendable.
    */
-  private boolean canDescend(Class clazz) {
+  private boolean canDescend(Class<?> clazz) {
     // We can't descend into Primitives (they are not objects)
-    return !clazz.isPrimitive();
+    return !checkNotNull(clazz).isPrimitive();
   }
 
   /**
@@ -133,8 +143,8 @@ public class ObjectGraph {
    * @param clazz
    * @return
    */
-  private boolean isExcludedClass(Class clazz) {
-    for (Class c : excludedClasses) {
+  private boolean isExcludedClass(Class<?> clazz) {
+    for (Class<?> c : excludedClasses) {
       if (c.isAssignableFrom(clazz)) {
         return true;
       }
@@ -148,7 +158,7 @@ public class ObjectGraph {
    * @param object The object
    * @param clazz The type of the field
    */
-  private void addIfNotVisited(Object object, Class clazz) {
+  private void addIfNotVisited(Object object, Class<?> clazz) {
     if (object != null && !visited.containsKey(object)) {
       toVisit.add(object);
       visited.put(object, clazz);
@@ -162,8 +172,10 @@ public class ObjectGraph {
    * @param clazz
    * @return
    */
-  private List<Field> getAllFields(List<Field> fields, Class clazz) {
+  private List<Field> getAllFields(List<Field> fields, Class<?> clazz) {
     // TODO consider caching the results of this.
+    checkNotNull(fields);
+    checkNotNull(clazz);
 
     fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
 
@@ -179,7 +191,7 @@ public class ObjectGraph {
     while (!toVisit.isEmpty()) {
 
       Object obj = toVisit.remove();
-      Class clazz = visited.get(obj);
+      Class<?> clazz = visited.get(obj);
 
       boolean terminate = visitor.visit(obj, clazz);
       if (terminate) return;
@@ -188,7 +200,7 @@ public class ObjectGraph {
 
       if (clazz.isArray()) {
         // If an Array, add each element to follow up
-        Class arrayType = clazz.getComponentType();
+        Class<?> arrayType = clazz.getComponentType();
 
         final int len = Array.getLength(obj);
 
@@ -198,7 +210,7 @@ public class ObjectGraph {
 
       } else {
         // If a normal class, add each field
-        List<Field> fields = getAllFields(new ArrayList<Field>(), obj.getClass());
+        List<Field> fields = getAllFields(new ArrayList<>(), obj.getClass());
         for (Field field : fields) {
           int modifiers = field.getModifiers();
 
@@ -206,7 +218,7 @@ public class ObjectGraph {
 
           if (excludeTransient && (modifiers & Modifier.TRANSIENT) == Modifier.TRANSIENT) continue;
 
-          Class fieldType = field.getType();
+          Class<?> fieldType = field.getType();
 
           // If the field type is directly on the exclude list, then skip.
           // Strictly this isn't needed as isExcludedClass is called later, but this is cheap

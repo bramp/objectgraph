@@ -2,7 +2,7 @@ objectgraph
 ===========
 by Andrew Brampton 2014,2016
 
-![Java](https://img.shields.io/badge/Java-6+-brightgreen.svg)
+![Java](https://img.shields.io/badge/Java-8+-brightgreen.svg)
 [![Build Status](https://img.shields.io/travis/bramp/objectgraph.svg)](https://travis-ci.org/bramp/objectgraph)
 [![Maven](https://img.shields.io/maven-central/v/net.bramp.objectgraph/objectgraph.svg)](http://mvnrepository.com/artifact/net.bramp.objectgraph/objectgraph)
 
