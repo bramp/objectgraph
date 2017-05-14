@@ -26,10 +26,10 @@ public class ObjectGraph {
   public interface Visitor {
     /**
      * Called for each Object visited.
-     * 
+     *
      * @param object The object being visited
      * @param clazz The type of field this object was originally found in. This may differ from
-     *        object.getClass() as an field defined as an Object, by hold any kind of class.
+     *     object.getClass() as an field defined as an Object, by hold any kind of class.
      * @return return true if you wish the graph transversal to stop, otherwise it will continue.
      */
     boolean visit(Object object, Class clazz);
@@ -39,13 +39,13 @@ public class ObjectGraph {
     this.visitor = visitor;
   }
 
-  static public ObjectGraph visitor(Visitor visitor) {
+  public static ObjectGraph visitor(Visitor visitor) {
     return new ObjectGraph(visitor);
   }
 
   /**
    * Include transient fields. By default they are excluded.
-   * 
+   *
    * @return this
    */
   public ObjectGraph includeTransient() {
@@ -55,7 +55,7 @@ public class ObjectGraph {
 
   /**
    * Exclude transient fields. By default they are excluded.
-   * 
+   *
    * @return this
    */
   public ObjectGraph excludeTransient() {
@@ -65,7 +65,7 @@ public class ObjectGraph {
 
   /**
    * Include static fields. By default they are excluded.
-   * 
+   *
    * @return this
    */
   public ObjectGraph includeStatic() {
@@ -75,7 +75,7 @@ public class ObjectGraph {
 
   /**
    * Exclude static fields. By default they are excluded.
-   * 
+   *
    * @return this
    */
   public ObjectGraph excludeStatic() {
@@ -101,7 +101,7 @@ public class ObjectGraph {
 
   /**
    * Conducts a breath first search of the object graph.
-   * 
+   *
    * @param root the object to start at.
    */
   public void traverse(Object root) {
@@ -109,8 +109,7 @@ public class ObjectGraph {
     visited.clear();
     toVisit.clear();
 
-    if (root == null)
-      return;
+    if (root == null) return;
 
     addIfNotVisited(root, root.getClass());
     start();
@@ -119,7 +118,7 @@ public class ObjectGraph {
   /**
    * Is this class a type we can descend deeper into. For example, primitives do not contains
    * fields, so we can not descend into them.
-   * 
+   *
    * @param clazz
    * @return if this class is descendable.
    */
@@ -130,7 +129,7 @@ public class ObjectGraph {
 
   /**
    * Is the class on the excluded list.
-   * 
+   *
    * @param clazz
    * @return
    */
@@ -145,7 +144,7 @@ public class ObjectGraph {
 
   /**
    * Add this object to be visited if it has not already been visited, or scheduled to be.
-   * 
+   *
    * @param object The object
    * @param clazz The type of the field
    */
@@ -158,7 +157,7 @@ public class ObjectGraph {
 
   /**
    * Return all declared and inherited fields for this class.
-   * 
+   *
    * @param fields
    * @param clazz
    * @return
@@ -183,11 +182,9 @@ public class ObjectGraph {
       Class clazz = visited.get(obj);
 
       boolean terminate = visitor.visit(obj, clazz);
-      if (terminate)
-        return;
+      if (terminate) return;
 
-      if (!canDescend(clazz))
-        continue;
+      if (!canDescend(clazz)) continue;
 
       if (clazz.isArray()) {
         // If an Array, add each element to follow up
@@ -205,19 +202,16 @@ public class ObjectGraph {
         for (Field field : fields) {
           int modifiers = field.getModifiers();
 
-          if (excludeStatic && (modifiers & Modifier.STATIC) == Modifier.STATIC)
-            continue;
+          if (excludeStatic && (modifiers & Modifier.STATIC) == Modifier.STATIC) continue;
 
-          if (excludeTransient && (modifiers & Modifier.TRANSIENT) == Modifier.TRANSIENT)
-            continue;
+          if (excludeTransient && (modifiers & Modifier.TRANSIENT) == Modifier.TRANSIENT) continue;
 
           Class fieldType = field.getType();
 
           // If the field type is directly on the exclude list, then skip.
           // Strictly this isn't needed as isExcludedClass is called later, but this is cheap
           // and avoids getting the object, which could be expensive (think hibernate).
-          if (excludedClasses.contains(fieldType))
-            continue;
+          if (excludedClasses.contains(fieldType)) continue;
 
           try {
             field.setAccessible(true);
@@ -225,8 +219,7 @@ public class ObjectGraph {
 
             // If the object's type, or parent of the object's type is on the exclude list, then
             // skip.
-            if (value != null && isExcludedClass(value.getClass()))
-              continue;
+            if (value != null && isExcludedClass(value.getClass())) continue;
 
             addIfNotVisited(value, fieldType);
 

@@ -1,16 +1,13 @@
 package net.bramp.objectgraph.test;
 
-/**
- * @author bramp
- */
+/** @author bramp */
 public class ClassTestClass {
 
-  static public class Root {
-  }
-  static public class Child extends Root {
-  }
-  static public class ChildChild extends Child {
-  }
+  public static class Root {}
+
+  public static class Child extends Root {}
+
+  public static class ChildChild extends Child {}
 
   public Root r = new Root();
   public Child c = new Child();

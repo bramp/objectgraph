@@ -116,5 +116,4 @@ public class ObjectGraphTest {
 
     ObjectGraph.visitor(visitor).traverse(this);
   }
-
 }
